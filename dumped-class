@@ -1,0 +1,15 @@
+@interface Class1;
+
+-(id)init();
+-(void)doSomething();
+-(bool)validate();
+-(int)add(int number1, int number2);
+
+@end
+
+@interface Class2;
+
+-(id)init();
+-(void)destroy();
+
+@end
