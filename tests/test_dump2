@@ -1,0 +1,17 @@
+@interface Class2
+
+- (id)init;
+
+@property xyz
+
+- (void)login;
+- (bool)validate;
+
+@end
+
+@interface Class3;
+
+- (id)init;
+- (void)destroy;
+
+@end
