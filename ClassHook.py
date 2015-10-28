@@ -9,7 +9,7 @@ import re
 __all__ = ['parse_class_dump']
 
 #- (int)add:(int)number1 delegate:(int)number2;
-METHOD_REGEX = r'[\-\+]\s*\((\*?\w*)\)(\w+)\:\((\*?\w*)\)(\w+)(?:\s+(?:\w*\:)?\((\*?\w*)\)(\w+))*'
+METHOD_REGEX = r'[\-\+]\s*\((\*?\w*)\)(\w+)(?:\:\((\*?\w*)\)(\w+)(?:\s+(?:\w*\:)?\((\*?\w*)\)(\w+))*)?'
 
 class HookedClass(object):
     '''
@@ -30,10 +30,11 @@ class HookedClass(object):
         @rtype: str
         '''
         out = ""
-        out += "%hook {}".format(self.name)
+        out += "%hook {}\n".format(self.name)
         for m in self.methods:
             out += m.hook(flag)
-        out += "%end"
+        out += "%end\n"
+        return out
     
     def __bool__(self):
         return True
@@ -56,10 +57,16 @@ class Method(object):
     def hook(self, flag=None):
         '''
         gets the string representing the method
+        to be used to tweak the method
         
         @rtype: str
         '''
-        return ""
+        out = self.signature[0:-1] # remove the ;
+        out += " {\n"
+        out += "\tNSLog(@'###TWEAK### {}.{}');\n".format(self.class_name, self.name)
+        out += "\t%orig;\n"
+        out += "}\n"
+        return out
 
 def parse_class_dump(dump):
     '''
@@ -88,12 +95,15 @@ def parse_class_dump(dump):
             m = re.match(METHOD_REGEX, line)
             if m:
                 method = Method()
+                current_class.methods.append(method)
                 method.class_name = current_class.name
                 method.signature = line.strip()
-                g = m.groups()
+                g = list(m.groups())
+                # there may be some None in g
                 method.type = g[0]
                 method.name = g[1]
                 g = g[2:]
+                g = filter(bool, g)
                 # read the parameters
                 while g:
                     method.params.append((g[0], g[1])) # (type, name)
@@ -103,5 +113,6 @@ def parse_class_dump(dump):
             m = re.match(r'@interface (.+)', line)
             if m:
                 current_class = HookedClass()
-                current_class.name = m.groups[0]
+                current_class.name = m.groups()[0]
                 continue
+    return classes
