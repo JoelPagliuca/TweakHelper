@@ -1,15 +1,18 @@
 @interface Class1;
 
--(id)init();
--(void)doSomething();
--(bool)validate();
--(int)add(int number1, int number2);
+- (id)init();
+
+@property xyz
+
+- (void)login;
+- (bool)validate;
+- (int)add:(int)number1 delegate:(int)number2;
 
 @end
 
 @interface Class2;
 
--(id)init();
--(void)destroy();
+- (id)init;
+- (void)destroy;
 
 @end
