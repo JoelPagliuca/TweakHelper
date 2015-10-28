@@ -6,7 +6,7 @@ Created on 28/10/2015
 
 import re
 
-__all__ = ['read_class_dump']
+__all__ = ['parse_class_dump']
 
 #- (int)add:(int)number1 delegate:(int)number2;
 METHOD_REGEX = r'[\-\+]\s*\((\*?\w*)\)(\w+)\:\((\*?\w*)\)(\w+)(?:\s+(?:\w*\:)?\((\*?\w*)\)(\w+))*'
@@ -61,7 +61,7 @@ class Method(object):
         '''
         return ""
 
-def read_class_dump(dump):
+def parse_class_dump(dump):
     '''
     makes a list of HookedClass from the given dump
     dump will be from open(...).readlines()
