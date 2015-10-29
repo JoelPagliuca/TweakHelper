@@ -12,6 +12,7 @@ class Test(unittest.TestCase):
     def setUp(self):
         self.dump1 = open('test_dump1', 'r').readlines()
         self.dump2 = open('test_dump2', 'r').readlines()
+        self.dump3 = open('test_dump3', 'r').readlines()
     
     def test_methodregex(self):
         self.assertIsNotNone(re.match(METHOD_REGEX, "-(void)login;"))
@@ -19,7 +20,7 @@ class Test(unittest.TestCase):
         self.assertIsNotNone(re.match(METHOD_REGEX, "- (*int)add:(int)number;"))
         self.assertIsNotNone(re.match(METHOD_REGEX, "+ (*int)add:(int)number1 (int)number2;"))
 
-    def test_parse1(self):
+    def test_parse_easyclass(self):
         res = parse_class_dump(self.dump1)
         self.assertIsInstance(res, list)
         self.assertEqual(len(res), 1)
@@ -33,7 +34,7 @@ class Test(unittest.TestCase):
         self.assertEqual(m.name, "init")
         self.assertEqual(m.type, "id")
     
-    def test_parse2(self):
+    def test_parse_multipleclasses(self):
         res = parse_class_dump(self.dump2)
         self.assertIsInstance(res, list)
         self.assertEqual(len(res), 2)
@@ -54,8 +55,22 @@ class Test(unittest.TestCase):
         self.assertEqual(m5.name, "destroy")
         self.assertEqual(m5.type, "void")
     
-    def test_parse3(self):
-        pass
+    def test_parse_methodswithparams(self):
+        res = parse_class_dump(self.dump3)
+        self.assertIsInstance(res, list)
+        self.assertEqual(len(res), 1)
+        c1 = res[0]
+        [m1, m2] = c1.methods
+        
+        self.assertEqual(m1.name, "setupWithParams")
+        self.assertEqual(len(m1.params), 2)
+        [p1, p2] = m1.params
+        self.assertSequenceEqual(p1, ("id", "arg1"))
+        self.assertSequenceEqual(p2, ("id", "arg2"))
+        
+        [p1, p2] = m2.params
+        self.assertSequenceEqual(p1, ("id", "arg1"))
+        self.assertSequenceEqual(p2, ("id", "arg2"))
 
 if __name__ == "__main__":
     unittest.main()

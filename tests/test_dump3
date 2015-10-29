@@ -1,0 +1,6 @@
+@interface Class2
+
+- (void)setupWithParams:(id)arg1 (id)arg2;
++ (void)setupAgain:(id)arg1 delegate:(id)arg2;
+
+@end
