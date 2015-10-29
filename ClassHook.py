@@ -33,7 +33,7 @@ class HookedClass(object):
         out += "%hook {}\n".format(self.name)
         for m in self.methods:
             out += m.hook(flag)
-        out += "%end\n"
+        out += "%end\n\n"
         return out
     
     def __bool__(self):
@@ -63,8 +63,9 @@ class Method(object):
         '''
         out = self.signature[0:-1] # remove the ;
         out += " {\n"
-        out += "\tNSLog(@'###TWEAK### {}.{}');\n".format(self.class_name, self.name)
-        out += "\t%orig"
+        indent = " "*4
+        out += indent+'NSLog(@"###TWEAK### {}.{}");\n'.format(self.class_name, self.name)
+        out += indent+"%orig"
         if self.params:
             args = [a[1] for a in self.params]
             out += "("
