@@ -64,7 +64,13 @@ class Method(object):
         out = self.signature[0:-1] # remove the ;
         out += " {\n"
         out += "\tNSLog(@'###TWEAK### {}.{}');\n".format(self.class_name, self.name)
-        out += "\t%orig;\n"
+        out += "\t%orig"
+        if self.params:
+            args = [a[1] for a in self.params]
+            out += "("
+            out += ", ".join(args)
+            out += ")"
+        out += ";\n"
         out += "}\n"
         return out
 

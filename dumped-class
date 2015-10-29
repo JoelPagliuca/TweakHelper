@@ -1,4 +1,4 @@
-@interface Class1;
+@interface Class1
 
 - (id)init();
 
@@ -10,7 +10,7 @@
 
 @end
 
-@interface Class2;
+@interface Class2
 
 - (id)init;
 - (void)destroy;
